@@ -1,2 +1,2 @@
 @echo off
-start "" "..\8bit-master\html\index.html"
+start "" "..\Pixelated_convertor\html\index.html"
