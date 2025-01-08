@@ -1,0 +1,31 @@
+{
+  "name": "8bit",
+  "version": "1.0.1",
+  "description": "Transform images into pixelated versions using canvas",
+  "main": "8bit.js",
+  "scripts": {
+    "test": "tape test/*.js"
+  },
+  "keywords": [
+    "eightbit",
+    "8bit",
+    "pixelize",
+    "pixelate",
+    "pixels",
+    "image",
+    "canvas"
+  ],
+  "homepage": "https://rogeriopvl.github.io/8bit",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rogeriopvl/8bit"
+  },
+  "author": "rogeriopvl",
+  "license": "MIT",
+  "devDependencies": {
+    "tape": "^4.2.0"
+  },
+  "dependencies": {
+    "8bit": "^1.0.1"
+  }
+}

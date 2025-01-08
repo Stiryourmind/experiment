@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>8-Bit Image Effect with Preview</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #canvas, #previewCanvas {
+            border: 1px solid #ccc;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Upload an Image for 8-Bit Effect</h1>
+    <input type="file" id="imageInput" accept="image/*">
+    <br><br>
+    <label for="pixelationLevel">Pixelation Level:</label>
+    <input type="number" id="pixelationLevel" value="10" min="1" max="100">
+    <button id="executeButton">Apply 8-Bit Effect</button>
+    
+    <h2>Low-Resolution Preview:</h2>
+    <canvas id="previewCanvas"></canvas>
+
+    <h2>8-Bit Effect:</h2>
+    <canvas id="8bitCanvas"></canvas>
+
+    <script src="../8bit.js"></script>
+    <script>
+
+        document.getElementById('imageInput').addEventListener('change', function() {
+            const input = this;
+            const file = input.files[0];
+
+            if (file) {
+                const img = new Image();
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    img.src = e.target.result; // Set image source to the uploaded file
+                };
+
+                img.onload = function () {
+                    // Draw low-res preview
+                    const previewCanvas = document.getElementById('previewCanvas');
+                    const previewCtx = previewCanvas.getContext('2d');
+
+                    // Set low-resolution dimensions
+                    const lowResWidth = img.width / 4; // Adjust the divisor for lower resolution
+                    const lowResHeight = img.height / 4;
+
+                    // Set canvas size
+                    previewCanvas.width = lowResWidth;
+                    previewCanvas.height = lowResHeight;
+
+                    // Draw the image on the low-res canvas
+                    previewCtx.drawImage(img, 0, 0, lowResWidth, lowResHeight);
+                };
+
+                reader.readAsDataURL(file); // Read the file as a data URL
+            } else {
+                alert('Please select an image file first.');
+            }
+        });
+
+        document.getElementById('executeButton').addEventListener('click', function() {
+            const input = document.getElementById('imageInput');
+            const file = input.files[0];
+            const pixelationLevel = parseInt(document.getElementById('pixelationLevel').value, 10); // Get pixelation level
+
+            if (file) {
+                const img = new Image();
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    img.src = e.target.result; // Set image source to the uploaded file
+                };
+
+                img.onload = function () {
+
+                    //const finalCanvas = document.getElementById('8bitCanvas');
+                    //finalCanvas.width = img.width/4;  // Set to original width
+                    //finalCanvas.height = img.height/4; // Set to original height
+
+                    // Apply 8-bit effect
+                    eightBit(document.getElementById('8bitCanvas'), img, pixelationLevel);
+                   
+
+
+                    // Create low-res preview after the effect
+                    //createLowResPreview(finalCanvas);
+                };
+
+                reader.readAsDataURL(file); // Read the file as a data URL
+            } else {
+                alert('Please select an image file first.');
+            }
+        });
+
+        // function createLowResPreview(sourceCanvas) {
+        //     const previewCanvas2 = document.getElementById('previewCanvas2');
+        //     const previewCtx = previewCanvas2.getContext('2d');
+
+        //     // Set low-resolution dimensions
+        //     const lowResWidth = sourceCanvas.width / 4; // Adjust the divisor for lower resolution
+        //     const lowResHeight = sourceCanvas.height / 4;
+
+        //     // Set preview canvas size
+        //     previewCanvas.width = lowResWidth;
+        //     previewCanvas.height = lowResHeight;
+
+        //     // Draw the final result on the low-res canvas
+        //     previewCtx.drawImage(sourceCanvas, 0, 0, lowResWidth, lowResHeight);
+        // };
+
+    </script>
+</body>
+</html>
