@@ -4,9 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>8-Bit Image Effect</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: "Silkscreen", serif;
+            font-weight: 400;
             background-color: #000000;
             margin: 0;
             padding: 1rem;
@@ -15,18 +19,28 @@
             align-items: center;
         }
         header {
-            -webkit-text-fill-color: aquamarine;
+            -webkit-text-fill-color: #ffffff;
             text-align: center;
             margin-bottom: 1rem;
         }
+        .home-button {
+            font-size: 0.9em;
+            color: #007BFF;
+            position: absolute;
+            top: 20px; /* Adjust as needed */
+            left: 20px; /* Adjust as needed */
+            display: flex;
+            gap: 10px; /* Space between logos */
+        }
+       
         .upload-section, .canvas-section {
             background: rgb(87, 87, 87);
-            -webkit-text-fill-color: rgb(255, 64, 0);
-            border-radius: 1rem;
+            -webkit-text-fill-color: #007BFF;
+            border-radius: 2rem;
             box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.1);
             padding: 1rem;
-            margin-bottom: 1rem;
-            width: 100%;
+            margin-bottom: 0.2rem;
+            width: auto;
             max-width: 50rem; /* Increased max width for side-by-side layout */
             height: auto;
         }
@@ -42,10 +56,10 @@
             gap: 2rem; /* Space between the canvases */
         }
         canvas {
-            border: 1px solid #000000;
+            border: 0.5px solid #000000;
             width: auto;
-            max-width: 25rem; /* Set a maximum width for responsiveness */
-            height: 18rem; /* Automatically adjust height */
+            max-width: 20rem; /* Set a maximum width for responsiveness */
+            height: 20rem; /* Automatically adjust height */
         }
         footer {
             text-align: center;
@@ -55,8 +69,8 @@
         }
         .subbody-text {
             font-size: 0.9em;
-            color: aquamarine;
-            margin-top: 5px;
+            color: #007BFF;
+            margin-top: 2px;
             text-align: center;
         }
 
@@ -66,9 +80,24 @@
                 flex-direction: row; /* Switch back to row layout on larger screens */
             }
         }
+        footer {
+            position: fixed; /* Fix footer position */
+            bottom: 0; /* Stick to bottom */
+            left: 0; /* Align to left */
+            right: 0; /* Align to right */
+            margin-top: 20px; /* Space above the footer */
+            padding: 10px;
+            background-color: #333;
+            color: white;
+            font-size: 0.5em;
+            text-align: center; /* Center the text */
+        }
     </style>
 </head>
 <body>
+    <div>
+        <a href="/experiment/" class="home-button">home</a>
+    </div>
     <header>
         <h1>PIXELATION EFFECTOR</h1>
         <p>Upload an image and apply an 8-bit pixelation effect.</p>
@@ -94,10 +123,8 @@
                 <canvas id="8bitCanvas"></canvas>
             </div>
         </div>
-        <p class="subbody-text">Please use the mouse right-click to download the image.</p>
-        <button id="downloadButton">Download 8-Bit Image</button>
-        
     </div>
+    <p></p><button id="downloadButton" >Download 8-Bit Image</button></p>
 
     <footer>
         <p>&copy; 2025 SUTUREXYZ. All rights reserved.</p>
@@ -178,5 +205,9 @@
             }
         });
     </script>
+    <p></p>
+    <footer>
+        Copyright © 2025 STIR PRODUCTION LTD & CIMP TECH
+    </footer>
 </body>
 </html>
