@@ -113,7 +113,7 @@ function createUI(){
   saveButton.style('font-size', '20px');
   saveButton.style('background', 'none'); 
   saveButton.style('border', 'none');
-  saveButton.style('color', 'white');
+  saveButton.style('color', 'rgb(119, 251, 93)');
   saveButton.style('cursor', 'pointer');
   saveButton.style('padding', '0');
   saveButton.mouseOver(() => saveButton.style('color', 'rgb(64, 131, 50)')); 
@@ -128,7 +128,7 @@ function createUI(){
   restartButton.style('font-size', '20px');
   restartButton.style('background', 'none'); 
   restartButton.style('border', 'none');
-  restartButton.style('color', 'white');
+  restartButton.style('color', 'rgb(119, 251, 93)');
   restartButton.style('cursor', 'pointer');
   restartButton.style('padding', '0'); 
   restartButton.mouseOver(() => restartButton.style('color', 'rgb(64, 131, 50)'));
