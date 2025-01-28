@@ -111,7 +111,7 @@ function createUI(){
 	saveButton.parent('game-container');
   saveButton.style('font-family', 'Silkscreen');
   saveButton.style('font-size', '20px');
-  saveButton.style('background', 'none'); 
+  saveButton.style('background', 'rgb(0,0,0,0.6)'); 
   saveButton.style('border', 'none');
   saveButton.style('color', 'rgb(119, 251, 93)');
   saveButton.style('cursor', 'pointer');
@@ -126,7 +126,7 @@ function createUI(){
   restartButton.parent('game-container');
   restartButton.style('font-family', 'Silkscreen');
   restartButton.style('font-size', '20px');
-  restartButton.style('background', 'none'); 
+  restartButton.style('background', 'rgb(0,0,0,0.6)'); 
   restartButton.style('border', 'none');
   restartButton.style('color', 'rgb(119, 251, 93)');
   restartButton.style('cursor', 'pointer');
