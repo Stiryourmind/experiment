@@ -38,7 +38,7 @@ function setup() {
   gridSizeY = windowHeight/30;
 
 	//const scaleFactor = min(windowWidth / AspectRatioWidth, windowHeight / AspectRatioHeight);
-	createCanvas(windowWidth-100, windowHeight-200).parent('game-container');
+	createCanvas(windowWidth-100, windowHeight-150).parent('game-container');
  
 	cellSizeX = width / gridSizeX; 
   cellSizeY = height / gridSizeY; 
@@ -116,8 +116,8 @@ function createUI(){
   saveButton.style('color', 'white');
   saveButton.style('cursor', 'pointer');
   saveButton.style('padding', '0');
-  saveButton.mouseOver(() => saveButton.style('color', 'rgb(255, 215, 0)')); 
-  saveButton.mouseOut(() => saveButton.style('color', 'white'));
+  saveButton.mouseOver(() => saveButton.style('color', 'rgb(64, 131, 50)')); 
+  saveButton.mouseOut(() => saveButton.style('color', 'rgb(119, 251, 93)'));
 	saveButton.mousePressed(() => saveCanvas('snake_game', 'png'));
   saveButton.position((windowWidth-250),(10));
 	
@@ -131,8 +131,8 @@ function createUI(){
   restartButton.style('color', 'white');
   restartButton.style('cursor', 'pointer');
   restartButton.style('padding', '0'); 
-  restartButton.mouseOver(() => restartButton.style('color', 'rgb(255, 215, 0)'));
-  restartButton.mouseOut(() => restartButton.style('color', 'white'));
+  restartButton.mouseOver(() => restartButton.style('color', 'rgb(64, 131, 50)'));
+  restartButton.mouseOut(() => restartButton.style('color', 'rgb(119, 251, 93)'));
   restartButton.hide();
   restartButton.position((windowWidth-250),(50));
   restartButton.mousePressed(() => {
@@ -167,28 +167,28 @@ function createArrowButtons() {
 	arrowButtons.up.parent('game-container');
   applyStyles(arrowButtons.up, commonStyles);
   arrowButtons.up.mousePressed(() => (direction = [0, -1]));
-  arrowButtons.up.position((windowWidth-100)/2 -buttonSize/2,(windowHeight-200)-buttonSize*3.5);
+  arrowButtons.up.position((windowWidth-100)/2 -buttonSize/2,(windowHeight-150)-buttonSize*3.5);
 
 	// DOWN
   arrowButtons.down = createButton('▼');
   arrowButtons.down.parent('game-container');
   applyStyles(arrowButtons.down, commonStyles);
   arrowButtons.down.mousePressed(() => (direction = [0, 1]));
-  arrowButtons.down.position((windowWidth-100)/2 -buttonSize/2,(windowHeight-200)-buttonSize*1.5);
+  arrowButtons.down.position((windowWidth-100)/2 -buttonSize/2,(windowHeight-150)-buttonSize*1.5);
 
 	// LEFT
   arrowButtons.left = createButton('◀');
   arrowButtons.left.parent('game-container');
   applyStyles(arrowButtons.left, commonStyles);
 	arrowButtons.left.mousePressed(() => (direction = [-1, 0]));
-  arrowButtons.left.position((windowWidth-100)/2 -buttonSize*1.5,(windowHeight-200)-buttonSize*2.5);
+  arrowButtons.left.position((windowWidth-100)/2 -buttonSize*1.5,(windowHeight-150)-buttonSize*2.5);
 
 	// RIGHT 
   arrowButtons.right = createButton('▶');
   arrowButtons.right.parent('game-container'); 
   applyStyles(arrowButtons.right, commonStyles);
   arrowButtons.right.mousePressed(() => (direction = [1, 0]));
-  arrowButtons.right.position((windowWidth-100)/2 +buttonSize*0.5,(windowHeight-200)-buttonSize*2.5);
+  arrowButtons.right.position((windowWidth-100)/2 +buttonSize*0.5,(windowHeight-150)-buttonSize*2.5);
 }
 	
 // Helper function to apply styles to buttons
