@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>BG + Character Combiner</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: #050505;
+      color: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    .wrapper {
+      width: 100%;
+      max-width: 1000px;
+      padding: 24px 16px 40px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 1.8rem;
+    }
+
+    p.subtitle {
+      margin: 0 0 24px;
+      font-size: 0.9rem;
+      color: #a0a0a0;
+    }
+
+    .card {
+      background: #101010;
+      border-radius: 12px;
+      border: 1px solid #262626;
+      padding: 16px 18px 20px;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.9rem;
+      margin-bottom: 6px;
+      color: #e0e0e0;
+    }
+
+    input[type="file"] {
+      width: 100%;
+      background: #181818;
+      border-radius: 8px;
+      border: 1px solid #333;
+      color: #f5f5f5;
+      padding: 8px;
+      font-size: 0.9rem;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 80px;
+      resize: vertical;
+      background: #181818;
+      border-radius: 8px;
+      border: 1px solid #333;
+      color: #f5f5f5;
+      padding: 8px 10px;
+      font-size: 0.9rem;
+      outline: none;
+    }
+
+    textarea::placeholder {
+      color: #666;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      background: #181818;
+      border-radius: 8px;
+      border: 1px solid #333;
+      color: #f5f5f5;
+      padding: 8px 10px;
+      font-size: 0.9rem;
+    }
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .col {
+      flex: 1 1 260px;
+      min-width: 0;
+    }
+
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 10px 18px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    button.primary {
+      background: #4f46e5;
+      color: #ffffff;
+    }
+
+    button.primary:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+
+    button.secondary {
+      background: #262626;
+      color: #f5f5f5;
+      border: 1px solid #3a3a3a;
+    }
+
+    .status {
+      margin-top: 8px;
+      font-size: 0.8rem;
+      color: #bbbbbb;
+      min-height: 1.2em;
+    }
+
+    .hint {
+      font-size: 0.8rem;
+      color: #777;
+      margin-top: 4px;
+    }
+
+    .preview-wrapper {
+      margin-top: 8px;
+      display: flex;
+      justify-content: flex-start;
+    }
+
+    .preview-image {
+      max-width: 100%;
+      max-height: 200px;
+      border-radius: 10px;
+      border: 1px solid #333;
+      display: none;
+      object-fit: contain;
+    }
+
+    .output-box {
+      text-align: center;
+      min-height: 220px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .output-box img {
+      max-width: 100%;
+      max-height: 480px;
+      border-radius: 12px;
+      border: 1px solid #333;
+      display: none;
+    }
+
+    .output-actions {
+      margin-top: 10px;
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <h1>BG + Character Combiner</h1>
+    <p class="subtitle">
+      Upload a background and a character. The workflow will integrate the character naturally into the scene, following your prompts and lighting conditions.
+    </p>
+
+    <div class="card">
+      <form id="generateForm">
+        <!-- UPLOADS + PREVIEWS -->
+        <div class="row" style="margin-bottom: 14px;">
+          <div class="col">
+            <label for="bgImageInput">Background image (JPG/PNG)</label>
+            <input id="bgImageInput" name="bgImage" type="file" accept="image/*" />
+            <div class="hint">This will be used as the scene / environment.</div>
+            <div class="preview-wrapper">
+              <img id="bgPreview" class="preview-image" alt="Background preview" />
+            </div>
+          </div>
+          <div class="col">
+            <label for="charImageInput">Character image (JPG/PNG)</label>
+            <input id="charImageInput" name="charImage" type="file" accept="image/*" />
+            <div class="hint">This character will be integrated into the background.</div>
+            <div class="preview-wrapper">
+              <img id="charPreview" class="preview-image" alt="Character preview" />
+            </div>
+          </div>
+        </div>
+
+        <!-- PROMPT -->
+        <div class="row" style="margin-bottom: 14px;">
+          <div class="col">
+            <label for="positivePrompt">Positive prompt</label>
+            <textarea id="positivePrompt">
+full-body integration, natural lighting that matches the background, physically correct contact shadows, consistent perspective, realistic shading, cinematic color grading
+            </textarea>
+          </div>
+        </div>
+
+        <!-- SEED -->
+        <div class="row" style="margin-bottom: 6px;">
+          <div class="col">
+            <label for="seedInput">Seed</label>
+            <input id="seedInput" type="number" min="0" step="1" />
+            <div class="hint">When "Use fixed seed" is off, a new random seed is used each time.</div>
+          </div>
+          <div class="col" style="display:flex; align-items:flex-end;">
+            <label style="display:flex; align-items:center; gap:8px; margin-bottom:0;">
+              <input id="fixedSeedCheckbox" type="checkbox" />
+              <span>Use fixed seed</span>
+            </label>
+          </div>
+        </div>
+
+        <button type="submit" class="primary" id="generateBtn">
+          Generate
+        </button>
+        <div class="status" id="statusText"></div>
+      </form>
+    </div>
+
+    <div class="card">
+      <label>Output</label>
+      <div class="output-box">
+        <img id="outputImage" alt="Generated result" />
+        <div class="status" id="outputMessage">No image generated yet.</div>
+        <div class="output-actions">
+          <button class="secondary" id="downloadBtn" disabled>Download Image</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById("generateForm");
+    const statusText = document.getElementById("statusText");
+    const generateBtn = document.getElementById("generateBtn");
+    const outputImage = document.getElementById("outputImage");
+    const outputMessage = document.getElementById("outputMessage");
+    const downloadBtn = document.getElementById("downloadBtn");
+
+    const seedInput = document.getElementById("seedInput");
+    const fixedSeedCheckbox = document.getElementById("fixedSeedCheckbox");
+
+    const bgInput = document.getElementById("bgImageInput");
+    const charInput = document.getElementById("charImageInput");
+    const bgPreview = document.getElementById("bgPreview");
+    const charPreview = document.getElementById("charPreview");
+
+    let lastImageUrl = null;
+    let currentSeedUrlBg = null;
+    let currentSeedUrlChar = null;
+
+    // --- seed helpers ---
+    function generateRandomSeedClient() {
+      return Math.floor(Math.random() * 4294967295);
+    }
+
+    let currentSeed = generateRandomSeedClient();
+    seedInput.value = currentSeed;
+
+    // --- preview helpers ---
+    function setImagePreview(fileInput, imgElement, previousUrlHolderName) {
+      const file = fileInput.files && fileInput.files[0];
+      if (!file) {
+        imgElement.style.display = "none";
+        imgElement.src = "";
+        return;
+      }
+
+      // Revoke old object URL if any
+      if (window[previousUrlHolderName]) {
+        URL.revokeObjectURL(window[previousUrlHolderName]);
+      }
+
+      const url = URL.createObjectURL(file);
+      window[previousUrlHolderName] = url;
+      imgElement.src = url;
+      imgElement.style.display = "block";
+    }
+
+    bgInput.addEventListener("change", () => {
+      setImagePreview(bgInput, bgPreview, "currentSeedUrlBg");
+    });
+
+    charInput.addEventListener("change", () => {
+      setImagePreview(charInput, charPreview, "currentSeedUrlChar");
+    });
+
+    // --- form submit ---
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const bgFile = bgInput.files[0];
+      const charFile = charInput.files[0];
+      const positivePrompt = document.getElementById("positivePrompt").value.trim();
+
+      if (!bgFile || !charFile) {
+        alert("Please upload both background and character images.");
+        return;
+      }
+      if (!positivePrompt) {
+        alert("Positive prompt is required.");
+        return;
+      }
+
+      const fixed = fixedSeedCheckbox.checked;
+
+      if (fixed) {
+        const parsed = parseInt(seedInput.value, 10);
+        if (!Number.isFinite(parsed) || parsed < 0) {
+          alert("Please enter a valid non-negative seed number.");
+          return;
+        }
+        currentSeed = parsed;
+      } else {
+        currentSeed = generateRandomSeedClient();
+        seedInput.value = currentSeed;
+      }
+
+      statusText.textContent = "Uploading images & sending request to RunningHub...";
+      generateBtn.disabled = true;
+      outputMessage.textContent = "Generating...";
+      outputImage.style.display = "none";
+      downloadBtn.disabled = true;
+
+      try {
+        const formData = new FormData();
+        formData.append("bgImage", bgFile);
+        formData.append("charImage", charFile);
+        formData.append("positivePrompt", positivePrompt);
+        formData.append("seed", currentSeed);
+        formData.append("fixedSeed", fixed ? "true" : "false");
+
+        const res = await fetch("/api/generate", {
+          method: "POST",
+          body: formData,
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.error || "Generation failed");
+        }
+
+        if (!data.imageUrl) {
+          throw new Error("No imageUrl returned");
+        }
+
+        lastImageUrl = data.imageUrl;
+
+        outputImage.src = data.imageUrl;
+        outputImage.style.display = "block";
+        outputMessage.textContent = "";
+        statusText.textContent = "Generation completed.";
+
+        if (typeof data.seed !== "undefined") {
+          currentSeed = data.seed;
+          seedInput.value = data.seed;
+        }
+
+        downloadBtn.disabled = false;
+      } catch (err) {
+        console.error(err);
+        statusText.textContent = "Error: " + err.message;
+        outputMessage.textContent = "Generation failed.";
+      } finally {
+        generateBtn.disabled = false;
+      }
+    });
+
+    // --- download ---
+    downloadBtn.addEventListener("click", async (e) => {
+      e.preventDefault();
+      if (!lastImageUrl) return;
+
+      try {
+        const fileName = lastImageUrl.split("/").pop() || "download.png";
+
+        const response = await fetch(lastImageUrl);
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+
+        URL.revokeObjectURL(url);
+      } catch (err) {
+        console.error("Download failed:", err);
+        alert("Failed to download image.");
+      }
+    });
+  </script>
+</body>
+</html>
