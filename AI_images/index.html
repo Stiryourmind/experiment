@@ -242,6 +242,31 @@
             to { transform: rotate(360deg); }
         }
 
+        /* Live Timer Styles */
+        .live-timer {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 12px;
+            padding: 10px 20px;
+            background: rgba(233, 69, 96, 0.15);
+            border: 1px solid rgba(233, 69, 96, 0.3);
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #ff6b6b;
+            font-family: 'Courier New', monospace;
+        }
+
+        .live-timer .timer-icon {
+            animation: pulse 1s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
         .output-container {
             text-align: center;
         }
@@ -309,12 +334,27 @@
             color: #666;
             font-size: 0.9rem;
         }
+
+        .render-time-badge {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 8px 16px;
+            background: rgba(78, 204, 163, 0.15);
+            border: 1px solid rgba(78, 204, 163, 0.3);
+            border-radius: 20px;
+            color: #4ecca3;
+            font-size: 0.9rem;
+        }
+
+        .render-time-badge .time-icon {
+            margin-right: 6px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>AI Image Blend (DEMO)</h1>
+            <h1>AI Image Blend (DEMO FOR Airside)</h1>
             <p>Character + Background Composer by STIR</p>
         </header>
 
@@ -364,6 +404,12 @@ Preserve high resolution and realistic details.</textarea>
             <div class="status-bar waiting" id="statusBar">
                 Waiting for input…
             </div>
+            
+            <!-- Live Timer -->
+            <div class="live-timer hidden" id="liveTimer">
+                <span class="timer-icon">⏱️</span>
+                <span id="timerDisplay">00:00</span>
+            </div>
         </div>
 
         <!-- Section 3: Output -->
@@ -377,6 +423,12 @@ Preserve high resolution and realistic details.</textarea>
                     Generated image will appear here.
                 </div>
                 <img id="outputImage" class="output-image hidden" alt="Generated Image">
+                
+                <div class="render-time-badge hidden" id="renderTimeBadge">
+                    <span class="time-icon">⏱️</span>
+                    <span id="renderTimeText">Rendered in 0.0s</span>
+                </div>
+                
                 <div class="output-actions hidden" id="outputActions">
                     <a class="output-btn download" id="downloadBtn" download="generated-image.png">
                         ⬇️ Download Image
@@ -389,13 +441,13 @@ Preserve high resolution and realistic details.</textarea>
         </div>
 
         <footer>
-            Powered by RunningHub AI
+            Powered by STIR PRODUCTION LTD
         </footer>
     </div>
 
     <script>
         // ========================================
-        // CONFIGURATION - Replace with your Render URL
+        // CONFIGURATION
         // ========================================
         const BACKEND_URL = 'https://running-hub-api.onrender.com';
         
@@ -418,6 +470,16 @@ Preserve high resolution and realistic details.</textarea>
         const outputActions = document.getElementById('outputActions');
         const downloadBtn = document.getElementById('downloadBtn');
         const openBtn = document.getElementById('openBtn');
+        const renderTimeBadge = document.getElementById('renderTimeBadge');
+        const renderTimeText = document.getElementById('renderTimeText');
+        
+        // Live Timer Elements
+        const liveTimer = document.getElementById('liveTimer');
+        const timerDisplay = document.getElementById('timerDisplay');
+        
+        // Timer variables
+        let timerInterval = null;
+        let startTime = null;
 
         // ========================================
         // Image Preview Handlers
@@ -454,10 +516,47 @@ Preserve high resolution and realistic details.</textarea>
         }
 
         // ========================================
+        // Live Timer Functions
+        // ========================================
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function formatRenderTime(seconds) {
+            if (seconds < 60) {
+                return `${seconds.toFixed(1)}s`;
+            } else {
+                const mins = Math.floor(seconds / 60);
+                const secs = (seconds % 60).toFixed(0);
+                return `${mins}m ${secs}s`;
+            }
+        }
+
+        function startTimer() {
+            startTime = Date.now();
+            liveTimer.classList.remove('hidden');
+            timerDisplay.textContent = '00:00';
+            
+            timerInterval = setInterval(() => {
+                const elapsed = (Date.now() - startTime) / 1000;
+                timerDisplay.textContent = formatTime(elapsed);
+            }, 1000);
+        }
+
+        function stopTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+            liveTimer.classList.add('hidden');
+        }
+
+        // ========================================
         // Generate Image
         // ========================================
         generateBtn.addEventListener('click', async () => {
-            // Validate inputs
             const charFile = charInput.files[0];
             const bgFile = bgInput.files[0];
             const prompt = promptInput.value.trim();
@@ -475,24 +574,32 @@ Preserve high resolution and realistic details.</textarea>
                 return;
             }
 
-            // Prepare form data
             const formData = new FormData();
             formData.append('prompt', prompt);
             formData.append('char_image', charFile);
             formData.append('bg_image', bgFile);
 
-            // Update UI
+            // Update UI & Start Timer
             generateBtn.disabled = true;
-            setStatus('Uploading images and starting generation...', 'loading');
+            setStatus('Generating image...', 'loading');
+            startTimer();
+            
             outputPlaceholder.classList.remove('hidden');
             outputImage.classList.add('hidden');
             outputActions.classList.add('hidden');
+            renderTimeBadge.classList.add('hidden');
 
             try {
                 const response = await fetch(`${BACKEND_URL}/generate`, {
                     method: 'POST',
                     body: formData
                 });
+
+                const endTime = Date.now();
+                const renderTimeSeconds = (endTime - startTime) / 1000;
+                const formattedTime = formatRenderTime(renderTimeSeconds);
+
+                stopTimer();
 
                 if (!response.ok) {
                     const errorData = await response.json().catch(() => ({}));
@@ -502,23 +609,30 @@ Preserve high resolution and realistic details.</textarea>
                 const data = await response.json();
 
                 if (data.imageUrl) {
-                    // Success!
                     outputImage.src = data.imageUrl;
                     outputImage.classList.remove('hidden');
                     outputPlaceholder.classList.add('hidden');
                     outputActions.classList.remove('hidden');
                     
+                    renderTimeText.textContent = `Rendered in ${formattedTime}`;
+                    renderTimeBadge.classList.remove('hidden');
+                    
                     downloadBtn.href = data.imageUrl;
                     openBtn.href = data.imageUrl;
                     
-                    setStatus('✅ Image generated successfully!', 'success');
+                    setStatus(`✅ Image generated successfully in ${formattedTime}!`, 'success');
                 } else {
                     throw new Error('No image URL in response');
                 }
 
             } catch (error) {
+                stopTimer();
+                const endTime = Date.now();
+                const renderTimeSeconds = (endTime - startTime) / 1000;
+                const formattedTime = formatRenderTime(renderTimeSeconds);
+                
                 console.error('Generation error:', error);
-                setStatus(`❌ Error: ${error.message}`, 'error');
+                setStatus(`❌ Failed after ${formattedTime}: ${error.message}`, 'error');
             } finally {
                 generateBtn.disabled = false;
             }
