@@ -1,424 +1,560 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>BG + Character Combiner</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>
-    * {
-      box-sizing: border-box;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Image Blend – Character + Background by STIR PRODUCTION LTD</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    body {
-      margin: 0;
-      background: #050505;
-      color: #f5f5f5;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      min-height: 100vh;
-    }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #000000 50%, #000000 100%);
+            min-height: 100vh;
+            color: #fff;
+            padding: 20px;
+        }
 
-    .wrapper {
-      width: 100%;
-      max-width: 1000px;
-      padding: 24px 16px 40px;
-    }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
 
-    h1 {
-      margin: 0 0 8px;
-      font-size: 1.8rem;
-    }
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
 
-    p.subtitle {
-      margin: 0 0 24px;
-      font-size: 0.9rem;
-      color: #a0a0a0;
-    }
+        header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, #e94560, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
 
-    .card {
-      background: #101010;
-      border-radius: 12px;
-      border: 1px solid #262626;
-      padding: 16px 18px 20px;
-      margin-bottom: 20px;
-    }
+        header p {
+            color: #a0a0a0;
+            font-size: 1.1rem;
+        }
 
-    label {
-      display: block;
-      font-size: 0.9rem;
-      margin-bottom: 6px;
-      color: #e0e0e0;
-    }
+        .section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
 
-    input[type="file"] {
-      width: 100%;
-      background: #181818;
-      border-radius: 8px;
-      border: 1px solid #333;
-      color: #f5f5f5;
-      padding: 8px;
-      font-size: 0.9rem;
-    }
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            color: #e94560;
+        }
 
-    textarea {
-      width: 100%;
-      min-height: 80px;
-      resize: vertical;
-      background: #181818;
-      border-radius: 8px;
-      border: 1px solid #333;
-      color: #f5f5f5;
-      padding: 8px 10px;
-      font-size: 0.9rem;
-      outline: none;
-    }
+        .section-number {
+            background: #e94560;
+            color: #fff;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1rem;
+        }
 
-    textarea::placeholder {
-      color: #666;
-    }
+        .upload-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
 
-    input[type="number"] {
-      width: 100%;
-      background: #181818;
-      border-radius: 8px;
-      border: 1px solid #333;
-      color: #f5f5f5;
-      padding: 8px 10px;
-      font-size: 0.9rem;
-    }
+        @media (max-width: 600px) {
+            .upload-grid {
+                grid-template-columns: 1fr;
+            }
+        }
 
-    .row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
+        .upload-box {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
 
-    .col {
-      flex: 1 1 260px;
-      min-width: 0;
-    }
+        .upload-box:hover {
+            border-color: #e94560;
+            background: rgba(233, 69, 96, 0.1);
+        }
 
-    button {
-      border: none;
-      border-radius: 999px;
-      padding: 10px 18px;
-      font-size: 0.95rem;
-      font-weight: 500;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      margin-top: 10px;
-    }
+        .upload-box.has-image {
+            border-style: solid;
+            border-color: #4ecca3;
+        }
 
-    button.primary {
-      background: #4f46e5;
-      color: #ffffff;
-    }
+        .upload-box h3 {
+            margin-bottom: 12px;
+            color: #fff;
+        }
 
-    button.primary:disabled {
-      opacity: 0.5;
-      cursor: default;
-    }
+        .upload-box input[type="file"] {
+            display: none;
+        }
 
-    button.secondary {
-      background: #262626;
-      color: #f5f5f5;
-      border: 1px solid #3a3a3a;
-    }
+        .upload-label {
+            display: inline-block;
+            padding: 10px 24px;
+            background: #e94560;
+            color: #fff;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            margin-bottom: 12px;
+        }
 
-    .status {
-      margin-top: 8px;
-      font-size: 0.8rem;
-      color: #bbbbbb;
-      min-height: 1.2em;
-    }
+        .upload-label:hover {
+            background: #ff6b6b;
+        }
 
-    .hint {
-      font-size: 0.8rem;
-      color: #777;
-      margin-top: 4px;
-    }
+        .preview-container {
+            margin-top: 12px;
+            min-height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-    .preview-wrapper {
-      margin-top: 8px;
-      display: flex;
-      justify-content: flex-start;
-    }
+        .preview-container img {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
 
-    .preview-image {
-      max-width: 100%;
-      max-height: 200px;
-      border-radius: 10px;
-      border: 1px solid #333;
-      display: none;
-      object-fit: contain;
-    }
+        .preview-placeholder {
+            color: #666;
+            font-size: 0.9rem;
+        }
 
-    .output-box {
-      text-align: center;
-      min-height: 220px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
+        .prompt-textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            color: #fff;
+            font-size: 1rem;
+            font-family: inherit;
+            resize: vertical;
+            transition: border-color 0.3s ease;
+        }
 
-    .output-box img {
-      max-width: 100%;
-      max-height: 480px;
-      border-radius: 12px;
-      border: 1px solid #333;
-      display: none;
-    }
+        .prompt-textarea:focus {
+            outline: none;
+            border-color: #e94560;
+        }
 
-    .output-actions {
-      margin-top: 10px;
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-    }
-  </style>
+        .prompt-hint {
+            margin-top: 8px;
+            color: #888;
+            font-size: 0.85rem;
+        }
+
+        .generate-btn {
+            width: 100%;
+            padding: 16px 32px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            background: linear-gradient(90deg, #e94560, #ff6b6b);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            margin-top: 16px;
+        }
+
+        .generate-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(233, 69, 96, 0.4);
+        }
+
+        .generate-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .status-bar {
+            margin-top: 16px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.95rem;
+        }
+
+        .status-bar.waiting {
+            background: rgba(255, 255, 255, 0.1);
+            color: #888;
+        }
+
+        .status-bar.loading {
+            background: rgba(78, 204, 163, 0.2);
+            color: #4ecca3;
+        }
+
+        .status-bar.success {
+            background: rgba(78, 204, 163, 0.2);
+            color: #4ecca3;
+        }
+
+        .status-bar.error {
+            background: rgba(233, 69, 96, 0.2);
+            color: #e94560;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #4ecca3;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .output-container {
+            text-align: center;
+        }
+
+        .output-placeholder {
+            padding: 60px 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            color: #666;
+        }
+
+        .output-image {
+            max-width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        .output-actions {
+            margin-top: 20px;
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .output-btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .output-btn.download {
+            background: #4ecca3;
+            color: #1a1a2e;
+            border: none;
+        }
+
+        .output-btn.download:hover {
+            background: #3db892;
+        }
+
+        .output-btn.open {
+            background: transparent;
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .output-btn.open:hover {
+            border-color: #fff;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+    </style>
 </head>
 <body>
-  <div class="wrapper">
-    <h1>BG + Character Combiner</h1>
-    <p class="subtitle">
-      Upload a background and a character. The workflow will integrate the character naturally into the scene, following your prompts and lighting conditions.
-    </p>
+    <div class="container">
+        <header>
+            <h1>AI Image Blend (DEMO)</h1>
+            <p>Character + Background Composer by STIR</p>
+        </header>
 
-    <div class="card">
-      <form id="generateForm">
-        <!-- UPLOADS + PREVIEWS -->
-        <div class="row" style="margin-bottom: 14px;">
-          <div class="col">
-            <label for="bgImageInput">Background image (JPG/PNG)</label>
-            <input id="bgImageInput" name="bgImage" type="file" accept="image/*" />
-            <div class="hint">This will be used as the scene / environment.</div>
-            <div class="preview-wrapper">
-              <img id="bgPreview" class="preview-image" alt="Background preview" />
+        <!-- Section 1: Upload Images -->
+        <div class="section">
+            <div class="section-title">
+                <span class="section-number">1</span>
+                <span>Upload Images</span>
             </div>
-          </div>
-          <div class="col">
-            <label for="charImageInput">Character image (JPG/PNG)</label>
-            <input id="charImageInput" name="charImage" type="file" accept="image/*" />
-            <div class="hint">This character will be integrated into the background.</div>
-            <div class="preview-wrapper">
-              <img id="charPreview" class="preview-image" alt="Character preview" />
+            <div class="upload-grid">
+                <div class="upload-box" id="charUploadBox">
+                    <h3>👤 Character Image</h3>
+                    <label class="upload-label" for="charInput">Choose File</label>
+                    <input type="file" id="charInput" accept="image/*">
+                    <div class="preview-container">
+                        <span class="preview-placeholder" id="charPlaceholder">No file selected</span>
+                        <img id="charPreview" class="hidden" alt="Character Preview">
+                    </div>
+                </div>
+                <div class="upload-box" id="bgUploadBox">
+                    <h3>🏞️ Background Image</h3>
+                    <label class="upload-label" for="bgInput">Choose File</label>
+                    <input type="file" id="bgInput" accept="image/*">
+                    <div class="preview-container">
+                        <span class="preview-placeholder" id="bgPlaceholder">No file selected</span>
+                        <img id="bgPreview" class="hidden" alt="Background Preview">
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
 
-        <!-- PROMPT -->
-        <div class="row" style="margin-bottom: 14px;">
-          <div class="col">
-            <label for="positivePrompt">Positive prompt</label>
-            <textarea id="positivePrompt">
-full-body integration, natural lighting that matches the background, physically correct contact shadows, consistent perspective, realistic shading, cinematic color grading
-            </textarea>
-          </div>
+        <!-- Section 2: Prompt -->
+        <div class="section">
+            <div class="section-title">
+                <span class="section-number">2</span>
+                <span>Prompt Instructions</span>
+            </div>
+            <textarea class="prompt-textarea" id="promptInput">Please cut out the character cleanly from the character image and blend them naturally into the background image.
+
+Match lighting, shadows and color tones between character and background. 
+Keep the character's facial features and hairstyle unchanged. 
+Preserve high resolution and realistic details.</textarea>
+            <p class="prompt-hint">You can edit this prompt to customize the output.</p>
+            
+            <button class="generate-btn" id="generateBtn">🚀 Generate Image</button>
+            
+            <div class="status-bar waiting" id="statusBar">
+                Waiting for input…
+            </div>
         </div>
 
-        <!-- SEED -->
-        <div class="row" style="margin-bottom: 6px;">
-          <div class="col">
-            <label for="seedInput">Seed</label>
-            <input id="seedInput" type="number" min="0" step="1" />
-            <div class="hint">When "Use fixed seed" is off, a new random seed is used each time.</div>
-          </div>
-          <div class="col" style="display:flex; align-items:flex-end;">
-            <label style="display:flex; align-items:center; gap:8px; margin-bottom:0;">
-              <input id="fixedSeedCheckbox" type="checkbox" />
-              <span>Use fixed seed</span>
-            </label>
-          </div>
+        <!-- Section 3: Output -->
+        <div class="section">
+            <div class="section-title">
+                <span class="section-number">3</span>
+                <span>Output</span>
+            </div>
+            <div class="output-container">
+                <div class="output-placeholder" id="outputPlaceholder">
+                    Generated image will appear here.
+                </div>
+                <img id="outputImage" class="output-image hidden" alt="Generated Image">
+                <div class="output-actions hidden" id="outputActions">
+                    <a class="output-btn download" id="downloadBtn" download="generated-image.png">
+                        ⬇️ Download Image
+                    </a>
+                    <a class="output-btn open" id="openBtn" target="_blank">
+                        🔗 Open in New Tab
+                    </a>
+                </div>
+            </div>
         </div>
 
-        <button type="submit" class="primary" id="generateBtn">
-          Generate
-        </button>
-        <div class="status" id="statusText"></div>
-      </form>
+        <footer>
+            Powered by RunningHub AI
+        </footer>
     </div>
 
-    <div class="card">
-      <label>Output</label>
-      <div class="output-box">
-        <img id="outputImage" alt="Generated result" />
-        <div class="status" id="outputMessage">No image generated yet.</div>
-        <div class="output-actions">
-          <button class="secondary" id="downloadBtn" disabled>Download Image</button>
-        </div>
-      </div>
-    </div>
-  </div>
+    <script>
+        // ========================================
+        // CONFIGURATION - Replace with your Render URL
+        // ========================================
+        const BACKEND_URL = 'https://running-hub-api.onrender.com';
+        
+        // ========================================
+        // DOM Elements
+        // ========================================
+        const charInput = document.getElementById('charInput');
+        const bgInput = document.getElementById('bgInput');
+        const charPreview = document.getElementById('charPreview');
+        const bgPreview = document.getElementById('bgPreview');
+        const charPlaceholder = document.getElementById('charPlaceholder');
+        const bgPlaceholder = document.getElementById('bgPlaceholder');
+        const charUploadBox = document.getElementById('charUploadBox');
+        const bgUploadBox = document.getElementById('bgUploadBox');
+        const promptInput = document.getElementById('promptInput');
+        const generateBtn = document.getElementById('generateBtn');
+        const statusBar = document.getElementById('statusBar');
+        const outputPlaceholder = document.getElementById('outputPlaceholder');
+        const outputImage = document.getElementById('outputImage');
+        const outputActions = document.getElementById('outputActions');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const openBtn = document.getElementById('openBtn');
 
-  <script>
-    const form = document.getElementById("generateForm");
-    const statusText = document.getElementById("statusText");
-    const generateBtn = document.getElementById("generateBtn");
-    const outputImage = document.getElementById("outputImage");
-    const outputMessage = document.getElementById("outputMessage");
-    const downloadBtn = document.getElementById("downloadBtn");
-
-    const seedInput = document.getElementById("seedInput");
-    const fixedSeedCheckbox = document.getElementById("fixedSeedCheckbox");
-
-    const bgInput = document.getElementById("bgImageInput");
-    const charInput = document.getElementById("charImageInput");
-    const bgPreview = document.getElementById("bgPreview");
-    const charPreview = document.getElementById("charPreview");
-
-    let lastImageUrl = null;
-    let currentSeedUrlBg = null;
-    let currentSeedUrlChar = null;
-
-    // --- seed helpers ---
-    function generateRandomSeedClient() {
-      return Math.floor(Math.random() * 4294967295);
-    }
-
-    let currentSeed = generateRandomSeedClient();
-    seedInput.value = currentSeed;
-
-    // --- preview helpers ---
-    function setImagePreview(fileInput, imgElement, previousUrlHolderName) {
-      const file = fileInput.files && fileInput.files[0];
-      if (!file) {
-        imgElement.style.display = "none";
-        imgElement.src = "";
-        return;
-      }
-
-      // Revoke old object URL if any
-      if (window[previousUrlHolderName]) {
-        URL.revokeObjectURL(window[previousUrlHolderName]);
-      }
-
-      const url = URL.createObjectURL(file);
-      window[previousUrlHolderName] = url;
-      imgElement.src = url;
-      imgElement.style.display = "block";
-    }
-
-    bgInput.addEventListener("change", () => {
-      setImagePreview(bgInput, bgPreview, "currentSeedUrlBg");
-    });
-
-    charInput.addEventListener("change", () => {
-      setImagePreview(charInput, charPreview, "currentSeedUrlChar");
-    });
-
-    // --- form submit ---
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const bgFile = bgInput.files[0];
-      const charFile = charInput.files[0];
-      const positivePrompt = document.getElementById("positivePrompt").value.trim();
-
-      if (!bgFile || !charFile) {
-        alert("Please upload both background and character images.");
-        return;
-      }
-      if (!positivePrompt) {
-        alert("Positive prompt is required.");
-        return;
-      }
-
-      const fixed = fixedSeedCheckbox.checked;
-
-      if (fixed) {
-        const parsed = parseInt(seedInput.value, 10);
-        if (!Number.isFinite(parsed) || parsed < 0) {
-          alert("Please enter a valid non-negative seed number.");
-          return;
+        // ========================================
+        // Image Preview Handlers
+        // ========================================
+        function handleImagePreview(input, preview, placeholder, uploadBox) {
+            input.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        preview.src = event.target.result;
+                        preview.classList.remove('hidden');
+                        placeholder.classList.add('hidden');
+                        uploadBox.classList.add('has-image');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
         }
-        currentSeed = parsed;
-      } else {
-        currentSeed = generateRandomSeedClient();
-        seedInput.value = currentSeed;
-      }
 
-      statusText.textContent = "Uploading images & sending request to RunningHub...";
-      generateBtn.disabled = true;
-      outputMessage.textContent = "Generating...";
-      outputImage.style.display = "none";
-      downloadBtn.disabled = true;
+        handleImagePreview(charInput, charPreview, charPlaceholder, charUploadBox);
+        handleImagePreview(bgInput, bgPreview, bgPlaceholder, bgUploadBox);
 
-      try {
-        const formData = new FormData();
-        formData.append("bgImage", bgFile);
-        formData.append("charImage", charFile);
-        formData.append("positivePrompt", positivePrompt);
-        formData.append("seed", currentSeed);
-        formData.append("fixedSeed", fixed ? "true" : "false");
+        // ========================================
+        // Status Updates
+        // ========================================
+        function setStatus(message, type = 'waiting') {
+            statusBar.className = `status-bar ${type}`;
+            if (type === 'loading') {
+                statusBar.innerHTML = `<span class="spinner"></span>${message}`;
+            } else {
+                statusBar.textContent = message;
+            }
+        }
 
-        const res = await fetch("/api/generate", {
-          method: "POST",
-          body: formData,
+        // ========================================
+        // Generate Image
+        // ========================================
+        generateBtn.addEventListener('click', async () => {
+            // Validate inputs
+            const charFile = charInput.files[0];
+            const bgFile = bgInput.files[0];
+            const prompt = promptInput.value.trim();
+
+            if (!charFile) {
+                setStatus('❌ Please upload a character image.', 'error');
+                return;
+            }
+            if (!bgFile) {
+                setStatus('❌ Please upload a background image.', 'error');
+                return;
+            }
+            if (!prompt) {
+                setStatus('❌ Please enter a prompt.', 'error');
+                return;
+            }
+
+            // Prepare form data
+            const formData = new FormData();
+            formData.append('prompt', prompt);
+            formData.append('char_image', charFile);
+            formData.append('bg_image', bgFile);
+
+            // Update UI
+            generateBtn.disabled = true;
+            setStatus('Uploading images and starting generation...', 'loading');
+            outputPlaceholder.classList.remove('hidden');
+            outputImage.classList.add('hidden');
+            outputActions.classList.add('hidden');
+
+            try {
+                const response = await fetch(`${BACKEND_URL}/generate`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.detail || `Server error: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (data.imageUrl) {
+                    // Success!
+                    outputImage.src = data.imageUrl;
+                    outputImage.classList.remove('hidden');
+                    outputPlaceholder.classList.add('hidden');
+                    outputActions.classList.remove('hidden');
+                    
+                    downloadBtn.href = data.imageUrl;
+                    openBtn.href = data.imageUrl;
+                    
+                    setStatus('✅ Image generated successfully!', 'success');
+                } else {
+                    throw new Error('No image URL in response');
+                }
+
+            } catch (error) {
+                console.error('Generation error:', error);
+                setStatus(`❌ Error: ${error.message}`, 'error');
+            } finally {
+                generateBtn.disabled = false;
+            }
         });
 
-        const data = await res.json();
+        // ========================================
+        // Drag and Drop Support
+        // ========================================
+        function setupDragDrop(uploadBox, input) {
+            uploadBox.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadBox.style.borderColor = '#e94560';
+                uploadBox.style.background = 'rgba(233, 69, 96, 0.2)';
+            });
 
-        if (!res.ok) {
-          throw new Error(data.error || "Generation failed");
+            uploadBox.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                uploadBox.style.borderColor = '';
+                uploadBox.style.background = '';
+            });
+
+            uploadBox.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadBox.style.borderColor = '';
+                uploadBox.style.background = '';
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0 && files[0].type.startsWith('image/')) {
+                    input.files = files;
+                    input.dispatchEvent(new Event('change'));
+                }
+            });
         }
 
-        if (!data.imageUrl) {
-          throw new Error("No imageUrl returned");
-        }
-
-        lastImageUrl = data.imageUrl;
-
-        outputImage.src = data.imageUrl;
-        outputImage.style.display = "block";
-        outputMessage.textContent = "";
-        statusText.textContent = "Generation completed.";
-
-        if (typeof data.seed !== "undefined") {
-          currentSeed = data.seed;
-          seedInput.value = data.seed;
-        }
-
-        downloadBtn.disabled = false;
-      } catch (err) {
-        console.error(err);
-        statusText.textContent = "Error: " + err.message;
-        outputMessage.textContent = "Generation failed.";
-      } finally {
-        generateBtn.disabled = false;
-      }
-    });
-
-    // --- download ---
-    downloadBtn.addEventListener("click", async (e) => {
-      e.preventDefault();
-      if (!lastImageUrl) return;
-
-      try {
-        const fileName = lastImageUrl.split("/").pop() || "download.png";
-
-        const response = await fetch(lastImageUrl);
-        const blob = await response.blob();
-        const url = URL.createObjectURL(blob);
-
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = fileName;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-
-        URL.revokeObjectURL(url);
-      } catch (err) {
-        console.error("Download failed:", err);
-        alert("Failed to download image.");
-      }
-    });
-  </script>
+        setupDragDrop(charUploadBox, charInput);
+        setupDragDrop(bgUploadBox, bgInput);
+    </script>
 </body>
 </html>
